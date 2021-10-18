@@ -9,17 +9,20 @@ import { errorHandler } from './middlewares/error-handler';
 
 class Server {
     private readonly version : Number;
-    private app : Application;
+    private readonly app : Application;
     private userRouter: AuthRouter
 
     constructor() {
+        if (!process.env.JWT_KEY) {
+            throw new Error('JWT_KEY must be defined');
+        }
+
         this.app = express();
         this.app.set('trust proxy', true);
-        this.version = (process.env.version && parseInt(process.env.version)) || 1;
+        this.version = parseInt(process.env.version!);
         this.config();
         this.userRouter = new AuthRouter();
         this.routerConfig();
-        this.dbConnect();
     }
 
     private config() {
@@ -34,10 +37,6 @@ class Server {
         );
     }
 
-    private dbConnect() {
-        createConnection();
-    }
-
     private routerConfig() {
         this.app.use(`/api/v${this.version}/user`, this.userRouter.router);
 
@@ -48,16 +47,22 @@ class Server {
         this.app.use(errorHandler);
     }
 
-    public start() {
-        if (!process.env.JWT_KEY) {
-            throw new Error('JWT_KEY must be defined');
-        }
-
+    public async start() {
         const port = 3000;
+        await this.createDb();
         this.app.listen(port, () => {
             console.log(`Server is listening on port ${port}.`)
         });
     }
+
+    public async createDb() {
+        await createConnection();
+    }
+
+    public getApp() {
+        return this.app;
+    }
 }
 
-export { Server };
+const server = new Server();
+export { server };

@@ -33,3 +33,12 @@ Modularidade
 Teste automatizado 
 
 O projeto deverá ser entregue no GitHub pessoal do candidato, com permissão de acesso pelos avaliadores.
+
+
+===============
+
+Commands to run before start clusters:
+
+kubectl create secret generic jwt-secret --from-literal=JWT_KEY=$$$
+kubectl create secret generic pg-user-secret --from-literal=POSTGRES_USER=$$$
+kubectl create secret generic pg-pass-secret --from-literal=POSTGRES_PASS=$$$

@@ -1,4 +1,5 @@
-import { Server } from './server';
+import { server } from './server';
 
-const server = new Server();
-server.start();
+(async () => {
+    await server.start();
+})();

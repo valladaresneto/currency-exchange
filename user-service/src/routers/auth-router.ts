@@ -34,10 +34,10 @@ class AuthRouter {
             throw new BadRequestError('Email already in use');
         }
 
-        user.password = password;
+        user.password = await Password.toHash(password);
         user = await this.userService.create(user);
 
-        req.session.jwt = jwt.sign(
+        req.session!.jwt = jwt.sign(
             {
                 id: user.id,
                 email: user.email
@@ -67,7 +67,7 @@ class AuthRouter {
             throw new BadRequestError('Invalid Credentials');
         }
 
-        req.session.jwt = jwt.sign(
+        req.session!.jwt = jwt.sign(
             {
                 id: existingUser.id,
                 email: existingUser.email
@@ -75,7 +75,7 @@ class AuthRouter {
             process.env.JWT_KEY!
         );
 
-        res.status(201).send(existingUser);
+        res.status(200).send(existingUser);
     }
     public signout = async (req: Request, res: Response) => {
         req.session.destroy(() => console.log('Signout...'));
