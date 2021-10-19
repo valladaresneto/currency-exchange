@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  font-family: Verdana, sans-serif;
+}
+
+.app {
+  text-align: center;
+  font-size: 16px;
+}

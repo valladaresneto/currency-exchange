@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: currency-exchange-frontend-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: currency-exchange-frontend
+  template:
+    metadata:
+      labels:
+        app: currency-exchange-frontend
+    spec:
+      containers:
+        - name: currency-exchange-frontend
+          image: valladaresneto/currency-exchange-frontend
+          env:
+            - name: version
+              value: '1'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currency-exchange-frontend-srv
+spec:
+  selector:
+    app: currency-exchange-frontend
+  ports:
+    - name: currency-exchange-frontend
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

@@ -11,7 +11,8 @@ export default async () => {
         entities: ["src/models/**/*.{js,ts}"],
         dropSchema: process.env.DROP_SCHEMA === 'true',
         synchronize: true,
-        name: 'user-db'
+        name: 'user-db',
+        logging: true
     });
     console.log('Connected to database...');
 };

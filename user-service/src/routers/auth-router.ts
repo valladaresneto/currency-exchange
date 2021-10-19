@@ -24,7 +24,11 @@ class AuthRouter {
     }
 
     public signup = async (req: Request, res: Response) => {
-        const {email, password} = req.body;
+        const {email, password, confirmPassword} = req.body;
+
+        if (password !== confirmPassword) {
+            throw new BadRequestError("Passwords don't match.");
+        }
 
         let user = new UserEntity();
         user.email = email;
@@ -45,6 +49,7 @@ class AuthRouter {
             process.env.JWT_KEY!
         );
 
+        user.password = '';
         res.status(201).send(user);
     }
 
@@ -75,8 +80,10 @@ class AuthRouter {
             process.env.JWT_KEY!
         );
 
+        existingUser.password = '';
         res.status(200).send(existingUser);
     }
+
     public signout = async (req: Request, res: Response) => {
         req.session.destroy(() => console.log('Signout...'));
         res.send({});

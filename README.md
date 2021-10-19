@@ -39,6 +39,28 @@ O projeto deverá ser entregue no GitHub pessoal do candidato, com permissão de
 
 Commands to run before start clusters:
 
+Install ingress-nginx
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.4/deploy/static/provider/cloud/deploy.yaml
+
+Verify if it is running:
+
+kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx --watch
+
+Create secrets to use in the kubernetes config files:
+
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=$$$
 kubectl create secret generic pg-user-secret --from-literal=POSTGRES_USER=$$$
 kubectl create secret generic pg-pass-secret --from-literal=POSTGRES_PASS=$$$
+
+For running the project:
+
+skaffold dev
+
+In development mode try to access:
+
+currencyexchange.dev
+
+If you an security error, type:
+
+thisisunsafe

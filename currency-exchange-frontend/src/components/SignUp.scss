@@ -1,0 +1,23 @@
+@import "../constants";
+
+.sign-up-form {
+    max-width: 360px;
+    margin: auto;
+    height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+
+    form {
+        padding: 20px;
+        border: 1px solid $BORDER_COLOR;
+        border-radius: 10px;
+
+        input {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin-top: 20px;
+        }
+    }
+}
