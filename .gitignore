@@ -2,4 +2,11 @@
 .idea
 .gradle
 **/node_modules
+**/build
 **/package-lock.json
+/user-service/src/**/*.js
+/user-service/src/**/*.d.ts
+/currency-exchange-service/src/**/*.js
+/currency-exchange-service/src/**/*.d.ts
+/currency-exchange-common/src/**/*.js
+/currency-exchange-common/src/**/*.d.ts

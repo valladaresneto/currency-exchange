@@ -1,6 +1,10 @@
 import {Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
-import {UserEntity} from "../models/user";
+
+interface UserPayload {
+    id: string;
+    email: string;
+}
 
 declare module 'express-session' {
     interface SessionData {
@@ -11,7 +15,7 @@ declare module 'express-session' {
 declare global {
     namespace Express {
         interface Request {
-            currentUser?: UserEntity;
+            currentUser?: UserPayload;
         }
     }
 }
@@ -25,7 +29,7 @@ export const currentUser = (req: Request, res: Response, next: NextFunction) => 
         const payload = jwt.verify(
             req.session.jwt,
             process.env.JWT_KEY!
-        ) as UserEntity;
+        ) as UserPayload;
         req.currentUser = payload;
     } catch (err) {
     }

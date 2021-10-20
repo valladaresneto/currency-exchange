@@ -2,11 +2,11 @@ import {Request, Response, Router} from "express";
 import {body} from 'express-validator';
 import jwt from 'jsonwebtoken';
 
-import {Password} from '../services/password';
+import {Password} from '../utils/password';
 import {UserService} from '../services/user-service';
-import {validateRequest} from '../middlewares/validate-request';
-import {BadRequestError} from '../errors/bad-request-error';
 import {UserEntity} from "../models/user";
+
+import {validateRequest, BadRequestError} from '@valladaresnetoorg/currency-exchange-common';
 
 declare module 'express-session' {
     interface SessionData {

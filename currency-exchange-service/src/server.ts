@@ -2,15 +2,15 @@ import express, {Application} from 'express';
 import 'express-async-errors'
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
-import { AuthRouter } from './routers/auth-router';
-import createConnection from './dbconfig/dbconnector';
+import { CurrencyRouter } from './routers/currency-router';
 import cors from 'cors';
+
 import {NotFoundError, errorHandler} from '@valladaresnetoorg/currency-exchange-common';
 
 class Server {
     private readonly version : Number;
     private readonly app : Application;
-    private userRouter: AuthRouter
+    private currencyRouter: CurrencyRouter
 
     constructor() {
         if (!process.env.JWT_KEY) {
@@ -21,7 +21,7 @@ class Server {
         this.app.set('trust proxy', true);
         this.version = parseInt(process.env.version!);
         this.config();
-        this.userRouter = new AuthRouter();
+        this.currencyRouter = new CurrencyRouter();
         this.routerConfig();
     }
 
@@ -38,7 +38,7 @@ class Server {
     }
 
     private routerConfig() {
-        this.app.use(`/api/v${this.version}/user`, this.userRouter.router);
+        this.app.use(`/api/v${this.version}/currency`, this.currencyRouter.router);
 
         this.app.all('*', () => {
             throw new NotFoundError();
@@ -49,15 +49,11 @@ class Server {
 
     public async start() {
         const port = 3000;
-        await this.createDb();
         this.app.listen(port, () => {
             console.log(`Server is listening on port ${port}.`)
         });
     }
 
-    public async createDb() {
-        await createConnection();
-    }
 
     public getApp() {
         return this.app;

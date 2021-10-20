@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: currency-exchange-service-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: currency-exchange-service
+  template:
+    metadata:
+      labels:
+        app: currency-exchange-service
+    spec:
+      containers:
+        - name: currency-exchange-service
+          image: valladaresneto/currency-exchange-service
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+            - name: version
+              value: '1'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currency-exchange-service-srv
+spec:
+  selector:
+    app: currency-exchange-service
+  ports:
+    - name: currency-exchange-service
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

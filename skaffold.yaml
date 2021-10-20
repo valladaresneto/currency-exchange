@@ -16,6 +16,14 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: valladaresneto/currency-exchange-service
+      context: currency-exchange-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
     - image: valladaresneto/currency-exchange-frontend
       context: currency-exchange-frontend
       docker:

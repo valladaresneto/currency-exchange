@@ -17,6 +17,13 @@ spec:
                 name: user-srv
                 port:
                   number: 3000
+          - path: /api/v1/currency/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: currency-exchange-service-srv
+                port:
+                  number: 3000
           - path: /?(.*)
             pathType: Prefix
             backend:
