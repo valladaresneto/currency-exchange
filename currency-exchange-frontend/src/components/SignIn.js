@@ -2,7 +2,7 @@ import './SignIn.scss';
 import {useState} from "react";
 import axios from "axios";
 import {useHistory} from "react-router-dom";
-import {addToastMessages} from "../redux/actions";
+import {addToastMessages, setLoggedUser} from "../redux/actions";
 import {useDispatch} from "react-redux";
 
 function SignIn() {
@@ -21,7 +21,8 @@ function SignIn() {
                 password
             });
 
-            if (response.status === 201) {
+            if (response.status === 200) {
+                dispatch(setLoggedUser(response.data.email));
                 history.push("/dashboard");
             }
         } catch (error) {

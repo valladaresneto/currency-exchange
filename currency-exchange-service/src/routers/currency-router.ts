@@ -1,17 +1,45 @@
 import {Request, Response, Router} from "express";
 import {param} from 'express-validator';
+import {Parser} from 'xml2js';
 import axios from "axios";
 
-import {validateRequest, requireAuth, currentUser} from '@valladaresnetoorg/currency-exchange-common';
-import {CurrencyEntity} from "../models/currency";
+import {currentUser, requireAuth, validateRequest} from '@valladaresnetoorg/currency-exchange-common';
+import {CurrencyEntity, CurrencyOption} from "../models/currency";
 
 class CurrencyRouter {
     public router: Router;
     private currencyApiUrl = 'https://economia.awesomeapi.com.br';
-    private currencies = ['USD-BRL','EUR-BRL','GBP-BRL','CHF-BRL','DKK-BRL','UYU-BRL','NZD-BRL','CAD-BRL','BTC-BRL','ETH-BRL'];
+    private currencies: CurrencyOption[] = [];
 
     constructor() {
         this.routes();
+        this.getAvailableCurrencies().then(() => console.log('Currencies loaded.'))
+    }
+
+    public availableCurrencies = async (req: Request, res: Response) => {
+        await this.getAvailableCurrencies();
+        res.status(200).send(this.currencies);
+    }
+
+    private async getAvailableCurrencies() {
+        if (this.currencies.length === 0) {
+            this.currencies = await this.loadAvailableCurrencies();
+        }
+        return this.currencies;
+    }
+
+    private loadAvailableCurrencies() : Promise<CurrencyOption[]> {
+        return axios.get(`${this.currencyApiUrl}/xml/available`).then(async res => {
+            let parser = new Parser;
+            const promise = parser.parseStringPromise(String(res.data));
+            const xml = await promise;
+            const values = xml.xml
+            const currencies: CurrencyOption[] = []
+            for (const key of Object.keys(values)) {
+                currencies.push(new CurrencyOption({code: key, name: values[key][0]}))
+            }
+            return currencies;
+        });
     }
 
     public currentValue = async (req: Request, res: Response) => {
@@ -37,10 +65,11 @@ class CurrencyRouter {
 
     public routes() {
         this.router = Router();
+        this.router.get('/availableCurrencies', this.availableCurrencies);
         this.router.get('/historyValues/:currency/:days', [
                 param('currency')
                     .custom(value => {
-                        return this.currencies.indexOf(value) !== -1;
+                        return this.currencies.filter(currency => currency.code === value).length > 0;
 
                     })
                     .withMessage('The currency must exist and be in XXX-XXX format.'),
@@ -49,7 +78,7 @@ class CurrencyRouter {
                     .withMessage('Number of days must be a number between 2 and 365.')
             ],
             currentUser,
-            // requireAuth,
+            requireAuth,
             validateRequest,
             this.historyValues
         );
@@ -65,7 +94,7 @@ class CurrencyRouter {
                     .custom(value => {
                         value = value.split(',');
                         for (const val of value) {
-                            if (this.currencies.indexOf(val) === -1) {
+                            if (this.currencies.filter(currency => currency.code === val).length === 0) {
                                 return false;
                             }
                         }
@@ -74,7 +103,7 @@ class CurrencyRouter {
                     .withMessage('All currencies must be in XXX-XXX format.')
             ],
             currentUser,
-            // requireAuth,
+            requireAuth,
             validateRequest,
             this.currentValue
         );

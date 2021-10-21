@@ -84,8 +84,8 @@ class AuthRouter {
         res.status(200).send(existingUser);
     }
 
-    public signout = async (req: Request, res: Response) => {
-        req.session.destroy(() => console.log('Signout...'));
+    public signout = (req: Request, res: Response) => {
+        delete req.session!.jwt;
         res.send({});
     }
 

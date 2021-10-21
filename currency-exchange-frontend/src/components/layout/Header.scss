@@ -1,9 +1,25 @@
+@import "../../constants";
+
 .app-header {
     height: 70px;
     margin-bottom: 20px;
+    border: 1px solid $BORDER_COLOR;
+    background-color: $BG_HEADER_COLOR;
 
-    .navbar-collapse {
-        flex-grow: 0;
+    .navbar {
+        .navbar-brand {
+            color: $COLOR_HEADER !important;
+        }
+        .navbar-collapse {
+            flex-grow: 0;
+            .navbar-nav {
+                .nav-link {
+                    color: $COLOR_HEADER !important;
+                    margin-right: 25px;
+                }
+            }
+        }
     }
+
 }
 

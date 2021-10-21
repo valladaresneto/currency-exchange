@@ -1,29 +1,34 @@
 import './Content.css';
-import {Switch, Route} from 'react-router-dom'
-import Home from "../Home";
+import {Route, Switch, withRouter} from 'react-router-dom'
 import SignIn from "../SignIn";
 import SignUp from "../SignUp";
 import Dashboard from "../Dashboard";
+import PrivateRoute from "../../routes/PrivateRoute";
+import {isLoggedIn} from "../../service/AuthService";
+import NotLoggedRoute from "../../routes/NotLoggedRoute";
+import {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 
 function Content() {
+    const email = useSelector(state => state.user.email && state.user.email !== 'null' ? state.user.email : null);
+    const [authenticated, setAuthenticated] = useState(isLoggedIn());
+
+    useEffect(() => {
+        setAuthenticated(email !== null);
+    }, [email]);
+
     return (
-        <main className="app-content">
+        <main className="app-content container-fluid">
             <Switch>
-                <Route path="/dashboard">
-                    <Dashboard/>
-                </Route>
-                <Route path="/signin">
-                    <SignIn/>
-                </Route>
-                <Route path="/signup">
-                    <SignUp/>
-                </Route>
+                <PrivateRoute path="/dashboard" authenticated={authenticated} component={Dashboard} />
+                <NotLoggedRoute path="/signin" authenticated={authenticated} component={SignIn} />
+                <NotLoggedRoute path="/signup" authenticated={authenticated} component={SignUp} />
                 <Route path="/">
-                    <Home/>
+                    {authenticated ? <Dashboard/> : <SignIn/>}
                 </Route>
             </Switch>
         </main>
     );
 }
 
-export default Content;
+export default withRouter(Content);

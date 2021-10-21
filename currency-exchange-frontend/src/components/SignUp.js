@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import axios from 'axios';
 import {useDispatch} from "react-redux";
-import {addToastMessages} from "../redux/actions";
+import {addToastMessages, setLoggedUser} from "../redux/actions";
 
 const SignUp = () => {
     const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const SignUp = () => {
             });
 
             if (response.status === 201) {
+                dispatch(setLoggedUser(response.data.email));
                 history.push("/dashboard");
             }
         } catch (error) {

@@ -1,0 +1,18 @@
+@import "constants";
+
+body {
+    margin: 0;
+    font-family: Verdana, sans-serif;
+    background-color: $BG_COLOR;
+}
+
+.app {
+    font-size: 16px;
+
+    .btn {
+        &.btn-primary {
+            background-color: $BG_HEADER_COLOR;
+        }
+
+    }
+}
